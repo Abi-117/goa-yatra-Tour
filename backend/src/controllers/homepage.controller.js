@@ -1,3 +1,4 @@
+// backend/controllers/homepage.controller.js
 const Homepage = require("../models/homepage.model");
 
 exports.getHomepage = async (req, res) => {
@@ -5,7 +6,7 @@ exports.getHomepage = async (req, res) => {
     const data = await Homepage.findOne();
     res.json(data || {});
   } catch (error) {
-    console.error("GET Homepage Error:", error);
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -24,24 +25,18 @@ exports.updateHomepage = async (req, res) => {
       homepage.offers = JSON.parse(req.body.offers);
     }
 
-    // Save only filename
-    if (req.files.heroImage) {
+    // Save only filename (no leading /uploads/)
+    if (req.files && req.files.heroImage) {
       homepage.heroImage = req.files.heroImage[0].filename;
     }
-
-    if (req.files.ctaImage) {
+    if (req.files && req.files.ctaImage) {
       homepage.ctaImage = req.files.ctaImage[0].filename;
     }
 
     await homepage.save();
-
-    res.json({
-      success: true,
-      message: "Homepage updated",
-      data: homepage,
-    });
+    res.json({ success: true, data: homepage });
   } catch (error) {
-    console.error("UPDATE Homepage Error:", error);
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
