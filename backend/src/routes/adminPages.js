@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const auth = require('../middleware/adminAuth');
 const Page = require('../models/Page');
 const AdminUser = require("../models/AdminUser");
 
@@ -14,7 +14,7 @@ res.json(page);
 
 
 // ADMIN: update/create
-router.post('/:key', auth, async (req, res) => {
+router.post('/:key', auth, async (req, res) => { 
 const key = req.params.key;
 const payload = req.body;
 let page = await Page.findOne({ key });

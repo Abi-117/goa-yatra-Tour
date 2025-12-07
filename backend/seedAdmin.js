@@ -1,30 +1,30 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config();
+const dotenv = require("dotenv");
+dotenv.config(); // Load .env from backend folder
 
-// ✅ Correct path to AdminUser.js
-const AdminUser = require('./src/models/AdminUser');
-
-// ✅ Import DB Connection
-const connectDB = require('./src/config/db');
-
-connectDB();
+const connectDB = require("./src/config/db");
+const AdminUser = require("./src/models/AdminUser");
 
 (async () => {
-    try {
-        console.log("Seeding Admin...");
+  try {
+    await connectDB();
+    console.log("Database connected!");
 
-        await AdminUser.deleteMany({});
-        await AdminUser.create({
-            name: "Admin",
-            email: "admin@gmail.com",
-            password: "admin123"
-        });
+    console.log("Seeding admin user...");
 
-        console.log("Admin User Created Successfully!");
-        process.exit();
-    } catch (error) {
-        console.error("Seed Error:", error);
-        process.exit(1);
-    }
+    // Remove old admins (optional but ok)
+    await AdminUser.deleteMany({});
+
+    // Create new admin
+    await AdminUser.create({
+      name: "Admin",
+      email: process.env.ADMIN_EMAIL || "admin@gmail.com",
+      password: process.env.ADMIN_PASSWORD || "admin123",
+    });
+
+    console.log("Admin created successfully!");
+    process.exit(0);
+  } catch (err) {
+    console.error("Seed failed:", err);
+    process.exit(1);
+  }
 })();
